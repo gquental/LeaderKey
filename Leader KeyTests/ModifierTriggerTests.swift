@@ -88,3 +88,88 @@ final class ModifierTriggerTests: XCTestCase {
     XCTAssertFalse(target.showCalled)
   }
 }
+
+final class ControllerBehaviorTests: XCTestCase {
+  var originalSuite: UserDefaults!
+
+  override func setUp() {
+    super.setUp()
+    originalSuite = defaultsSuite
+    defaultsSuite = UserDefaults(suiteName: UUID().uuidString)!
+  }
+  
+  override func tearDown() {
+    defaultsSuite = originalSuite
+    super.tearDown()
+  }
+
+  func testBehaviorForAction_NoModifiers_ReturnsRunAndHide() {
+    let action = Action(key: "a", type: .command, value: "echo hello")
+    let behavior = Controller.behaviorForAction(action, modifiers: nil)
+    XCTAssertEqual(behavior, .runAndHide)
+  }
+
+  func testBehaviorForAction_ModifierMode_ReturnsRunAndHide() {
+    // Configure Modifier Mode to be Hyper (Cmd+Opt+Ctrl+Shift)
+    let hyper = NSEvent.ModifierFlags([.command, .option, .control, .shift])
+    Defaults[.modifierActivationMask] = hyper.rawValue
+    
+    // Even if sticky mode logic would catch it (e.g. it has Option), Modifier Mode takes precedence
+    let action = Action(key: "a", type: .command, value: "echo hello")
+    let behavior = Controller.behaviorForAction(action, modifiers: hyper)
+    
+    XCTAssertEqual(behavior, .runAndHide)
+  }
+
+  func testBehaviorForAction_StickyMode_ReturnsRunAndStay() {
+    // Default config: controlGroupOptionSticky
+    // So Option key means sticky
+    Defaults[.modifierKeyConfiguration] = .controlGroupOptionSticky
+    Defaults[.modifierActivationMask] = 0 // Modifier mode disabled
+    
+    let action = Action(key: "a", type: .command, value: "echo hello")
+    let behavior = Controller.behaviorForAction(action, modifiers: .option)
+    
+    XCTAssertEqual(behavior, .runAndStay)
+  }
+
+  func testBehaviorForAction_StickyModeAlternative_ReturnsRunAndStay() {
+    // Switch config: optionGroupControlSticky
+    // So Control key means sticky
+    Defaults[.modifierKeyConfiguration] = .optionGroupControlSticky
+    Defaults[.modifierActivationMask] = 0
+    
+    let action = Action(key: "a", type: .command, value: "echo hello")
+    let behavior = Controller.behaviorForAction(action, modifiers: .control)
+    
+    XCTAssertEqual(behavior, .runAndStay)
+  }
+
+  func testBehaviorForAction_NormalModifiers_ReturnsRunAndHide() {
+    Defaults[.modifierKeyConfiguration] = .controlGroupOptionSticky
+    Defaults[.modifierActivationMask] = NSEvent.ModifierFlags.command.rawValue
+    
+    // Using Shift, which is neither sticky nor configured modifier mode
+    let action = Action(key: "a", type: .command, value: "echo hello")
+    let behavior = Controller.behaviorForAction(action, modifiers: .shift)
+    
+    XCTAssertEqual(behavior, .runAndHide)
+  }
+  
+  func testIsModifierMode_ExactMatch() {
+    let cmd = NSEvent.ModifierFlags.command
+    Defaults[.modifierActivationMask] = cmd.rawValue
+    
+    XCTAssertTrue(Controller.isModifierMode(cmd))
+    XCTAssertFalse(Controller.isModifierMode(.option))
+    XCTAssertFalse(Controller.isModifierMode(cmd.union(.option))) // Strict match? Implementation intersects relevant flags.
+  }
+  
+  func testIsModifierMode_IgnoresIrrelevantFlags() {
+    let cmd = NSEvent.ModifierFlags.command
+    Defaults[.modifierActivationMask] = cmd.rawValue
+    
+    // capsLock should be ignored
+    XCTAssertTrue(Controller.isModifierMode(cmd.union(.capsLock)))
+  }
+}

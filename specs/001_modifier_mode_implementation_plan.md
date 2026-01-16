@@ -13,7 +13,7 @@
 - [x] Connect release (flags mismatch) to `controller.hide()`.
 
 ## Phase 3: Execution Refinement
-- [ ] Modify `Controller.handleKey` to ensure `hide()` is called immediately on execution, overriding any "stay open" logic if triggered via Modifier Mode.
+- [x] Modify `Controller.handleKey` to ensure `hide()` is called immediately on execution, overriding any "stay open" logic if triggered via Modifier Mode.
     - *Note:* Existing logic usually hides on execution, but verify sticky key behavior doesn't conflict.
 
 ## Phase 4: Safety & Cleanup

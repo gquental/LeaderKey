@@ -162,17 +162,18 @@ class Controller {
     switch hit {
     case .action(let action):
       if execute {
-        if let mods = modifiers, isInStickyMode(mods) {
-          runAction(action)
-        } else {
+        switch Controller.behaviorForAction(action, modifiers: modifiers) {
+        case .runAndHide:
           hide {
             self.runAction(action)
           }
+        case .runAndStay:
+          runAction(action)
         }
       }
       // If execute is false, just stay visible showing the matched action
     case .group(let group):
-      if execute, let mods = modifiers, shouldRunGroupSequenceWithModifiers(mods) {
+      if execute, let mods = modifiers, Controller.shouldRunGroupSequenceWithModifiers(mods) {
         hide {
           self.runGroup(group)
         }
@@ -190,11 +191,45 @@ class Controller {
     }
   }
 
-  private func shouldRunGroupSequence(_ event: NSEvent) -> Bool {
-    return shouldRunGroupSequenceWithModifiers(event.modifierFlags)
+  internal enum ActionExecutionBehavior {
+    case runAndHide
+    case runAndStay
   }
 
-  private func shouldRunGroupSequenceWithModifiers(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
+  internal static func behaviorForAction(_ action: Action, modifiers: NSEvent.ModifierFlags?) -> ActionExecutionBehavior {
+    guard let mods = modifiers else {
+      return .runAndHide
+    }
+
+    // 1. Modifier Mode (Hyper Key) -> Always Hide
+    if isModifierMode(mods) {
+      return .runAndHide
+    }
+
+    // 2. Sticky Mode -> Stay Open
+    if isInStickyMode(mods) {
+      return .runAndStay
+    }
+
+    // 3. Default -> Hide
+    return .runAndHide
+  }
+
+  internal static func isModifierMode(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
+    let maskValue = Defaults[.modifierActivationMask]
+    guard maskValue > 0 else { return false }
+    
+    // We only care about the relevant modifiers for exact matching
+    let relevantFlags: NSEvent.ModifierFlags = [.command, .option, .control, .shift]
+    let currentFlags = modifierFlags.intersection(relevantFlags)
+    return currentFlags.rawValue == maskValue
+  }
+
+  private func shouldRunGroupSequence(_ event: NSEvent) -> Bool {
+    return Controller.shouldRunGroupSequenceWithModifiers(event.modifierFlags)
+  }
+
+  internal static func shouldRunGroupSequenceWithModifiers(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
     let config = Defaults[.modifierKeyConfiguration]
 
     switch config {
@@ -205,7 +240,7 @@ class Controller {
     }
   }
 
-  private func isInStickyMode(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
+  internal static func isInStickyMode(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
     let config = Defaults[.modifierKeyConfiguration]
 
     switch config {
