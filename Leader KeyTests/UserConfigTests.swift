@@ -142,6 +142,18 @@ final class UserConfigTests: XCTestCase {
     XCTAssertEqual(testAlertManager.shownAlerts.count, 0)
   }
 
+  func testModifierActivationMaskDefault() {
+    // Verify default is 0 (disabled)
+    XCTAssertEqual(Defaults[.modifierActivationMask], 0)
+  }
+
+  func testModifierActivationMaskPersistence() {
+    // Example mask (cmd+opt approx)
+    let mask: UInt = 1_048_840
+    Defaults[.modifierActivationMask] = mask
+    XCTAssertEqual(Defaults[.modifierActivationMask], mask)
+  }
+
   private func waitForConfigLoad() {
     let expectation = expectation(description: "config load flush")
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {

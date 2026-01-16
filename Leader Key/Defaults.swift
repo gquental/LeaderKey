@@ -39,6 +39,9 @@ extension Defaults.Keys {
   static let groupShortcuts = Key<Set<String>>(
     "groupShortcuts",
     default: Set(), suite: defaultsSuite)
+
+  static let modifierActivationMask = Key<UInt>(
+    "modifierActivationMask", default: 0, suite: defaultsSuite)
 }
 
 enum AutoOpenCheatsheetSetting: String, Defaults.Serializable {
