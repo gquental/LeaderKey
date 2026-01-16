@@ -20,7 +20,7 @@
 
 | Index | Spec File | Description | Status |
 |-------|-----------|-------------|--------|
-| 001 | [Modifier Mode](001_modifier_mode.md) | Hold modifiers (e.g. HyperKey) to show window. | Proposed |
+| 001 | [Modifier Mode](001_modifier_mode.md) | Hold modifiers (e.g. HyperKey) to show window. | Implemented |
 
 ## 3. Spec Generation Guidelines
 When creating a new specification (`.md` file) in this `specs/` directory, strict adherence to the project's existing conventions and architecture is required.
