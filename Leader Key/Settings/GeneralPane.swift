@@ -9,6 +9,7 @@ struct GeneralPane: View {
   @EnvironmentObject private var config: UserConfig
   @Default(.configDir) var configDir
   @Default(.theme) var theme
+  @Default(.modifierActivationMask) var modifierActivationMask
 
   var body: some View {
     Settings.Container(contentWidth: contentWidth) {
@@ -89,6 +90,15 @@ struct GeneralPane: View {
         KeyboardShortcuts.Recorder(for: .activate)
       }
 
+      Settings.Section(title: "Hold to Open") {
+        VStack(alignment: .leading) {
+          ModifierPicker(mask: $modifierActivationMask)
+          Text("Hold these keys to momentarily show the window.")
+            .font(.caption)
+            .foregroundColor(.secondary)
+        }
+      }
+
       Settings.Section(title: "Theme") {
         Picker("Theme", selection: $theme) {
           ForEach(Theme.all, id: \.self) { value in
@@ -101,6 +111,35 @@ struct GeneralPane: View {
         LaunchAtLogin.Toggle()
       }
     }
+  }
+}
+
+private struct ModifierPicker: View {
+  @Binding var mask: UInt
+
+  var body: some View {
+    HStack {
+      Toggle("⌃", isOn: binding(for: .control))
+      Toggle("⌥", isOn: binding(for: .option))
+      Toggle("⇧", isOn: binding(for: .shift))
+      Toggle("⌘", isOn: binding(for: .command))
+    }
+    .toggleStyle(.button)
+  }
+
+  private func binding(for flag: NSEvent.ModifierFlags) -> Binding<Bool> {
+    Binding(
+      get: {
+        (mask & flag.rawValue) == flag.rawValue
+      },
+      set: { isOn in
+        if isOn {
+          mask |= flag.rawValue
+        } else {
+          mask &= ~flag.rawValue
+        }
+      }
+    )
   }
 }
 
