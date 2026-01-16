@@ -30,3 +30,5 @@
 - [x] Create integration tests (`ModifierModeIntegrationTests`) to verify end-to-end user stories.
 
 - [x] Run full test suite to ensure no regression.
+- [x] Verified all tests pass (including plugin validation workaround).
+
