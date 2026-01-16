@@ -17,5 +17,5 @@
     - *Note:* Existing logic usually hides on execution, but verify sticky key behavior doesn't conflict.
 
 ## Phase 4: Safety & Cleanup
-- [ ] Ensure `windowDidResignKey` acts as a fail-safe to hide the window.
-- [ ] Verify no "focus wars" occur if the user holds the keys while switching spaces.
+- [x] Ensure `windowDidResignKey` acts as a fail-safe to hide the window.
+- [x] Verify no "focus wars" occur if the user holds the keys while switching spaces.

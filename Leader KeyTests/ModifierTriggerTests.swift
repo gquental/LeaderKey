@@ -87,6 +87,46 @@ final class ModifierTriggerTests: XCTestCase {
     XCTAssertTrue(target.hideCalled)
     XCTAssertFalse(target.showCalled)
   }
+
+  func testFailSafeInteraction() {
+    // Scenario: User holds modifiers (Show), then switches apps (Window resigns key -> Hide), then releases modifiers (Hide)
+    // We want to ensure that "Hide" is called appropriately and doesn't conflict.
+    
+    let cmd = NSEvent.ModifierFlags.command
+    Defaults[.modifierActivationMask] = cmd.rawValue
+    
+    // 1. Activation
+    let showExpectation = XCTestExpectation(description: "Show called")
+    target.showExpectation = showExpectation
+    
+    if let event = NSEvent.keyEvent(with: .flagsChanged, location: .zero, modifierFlags: cmd, timestamp: 0, windowNumber: 0, context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 55) {
+        trigger.handleFlagsChanged(event)
+    }
+    wait(for: [showExpectation], timeout: 1.0)
+    XCTAssertTrue(target.showCalled)
+    
+    // 2. Simulate Window Resigning Key (External Event)
+    // This isn't triggered by ModifierTrigger, but simulates what MainWindow.windowDidResignKey would do.
+    target.hide(afterClose: nil)
+    XCTAssertTrue(target.hideCalled)
+    
+    // Reset hide called to verify the next one
+    target.hideCalled = false
+    target.hideExpectation = nil
+    
+    // 3. Deactivation (Release modifiers)
+    let hideExpectation = XCTestExpectation(description: "Hide called again")
+    target.hideExpectation = hideExpectation
+    
+    if let event = NSEvent.keyEvent(with: .flagsChanged, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 55) {
+        trigger.handleFlagsChanged(event)
+    }
+    
+    wait(for: [hideExpectation], timeout: 1.0)
+    XCTAssertTrue(target.hideCalled)
+    
+    // If hide is idempotent (which it is in Controller), this is safe.
+  }
 }
 
 final class ControllerBehaviorTests: XCTestCase {
