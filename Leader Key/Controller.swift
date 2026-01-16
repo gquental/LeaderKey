@@ -129,7 +129,11 @@ class Controller {
     }
   }
 
-  func handleKey(_ key: String, withModifiers modifiers: NSEvent.ModifierFlags? = nil, execute: Bool = true) {
+  func handleKey(
+    _ key: String,
+    withModifiers modifiers: NSEvent.ModifierFlags? = nil,
+    execute: Bool = true
+  ) {
     if key == "?" {
       showCheatsheet()
       return
@@ -171,7 +175,7 @@ class Controller {
           runAction(action)
         }
       }
-      // If execute is false, just stay visible showing the matched action
+    // If execute is false, just stay visible showing the matched action
     case .group(let group):
       if execute, let mods = modifiers, Controller.shouldRunGroupSequenceWithModifiers(mods) {
         hide {
@@ -196,7 +200,10 @@ class Controller {
     case runAndStay
   }
 
-  internal static func behaviorForAction(_ action: Action, modifiers: NSEvent.ModifierFlags?) -> ActionExecutionBehavior {
+  internal static func behaviorForAction(
+    _ action: Action,
+    modifiers: NSEvent.ModifierFlags?
+  ) -> ActionExecutionBehavior {
     guard let mods = modifiers else {
       return .runAndHide
     }
@@ -218,7 +225,7 @@ class Controller {
   internal static func isModifierMode(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
     let maskValue = Defaults[.modifierActivationMask]
     guard maskValue > 0 else { return false }
-    
+
     // We only care about the relevant modifiers for exact matching
     let relevantFlags: NSEvent.ModifierFlags = [.command, .option, .control, .shift]
     let currentFlags = modifierFlags.intersection(relevantFlags)
@@ -229,7 +236,9 @@ class Controller {
     return Controller.shouldRunGroupSequenceWithModifiers(event.modifierFlags)
   }
 
-  internal static func shouldRunGroupSequenceWithModifiers(_ modifierFlags: NSEvent.ModifierFlags) -> Bool {
+  internal static func shouldRunGroupSequenceWithModifiers(
+    _ modifierFlags: NSEvent.ModifierFlags
+  ) -> Bool {
     let config = Defaults[.modifierKeyConfiguration]
 
     switch config {
