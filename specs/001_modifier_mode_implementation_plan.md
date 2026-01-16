@@ -15,6 +15,7 @@
 ## Phase 3: Execution Refinement
 - [x] Modify `Controller.handleKey` to ensure `hide()` is called immediately on execution, overriding any "stay open" logic if triggered via Modifier Mode.
     - *Note:* Existing logic usually hides on execution, but verify sticky key behavior doesn't conflict.
+- [x] Implement debounce logic (e.g. 50ms) for activation to prevent flickering when rolling keys.
 
 ## Phase 4: Safety & Cleanup
 - [x] Ensure `windowDidResignKey` acts as a fail-safe to hide the window.

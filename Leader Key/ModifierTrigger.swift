@@ -12,6 +12,7 @@ class ModifierTrigger {
   private var localMonitor: Any?
   private var cancellables = Set<AnyCancellable>()
   private weak var target: ModifierTriggerTarget?
+  private var pendingActivationWorkItem: DispatchWorkItem?
 
   init(target: ModifierTriggerTarget) {
     self.target = target
@@ -67,10 +68,15 @@ class ModifierTrigger {
     let targetFlags = NSEvent.ModifierFlags(rawValue: maskValue).intersection(relevantFlags)
 
     if currentFlags.rawValue == targetFlags.rawValue {
-      DispatchQueue.main.async {
-        self.target?.show()
+      pendingActivationWorkItem?.cancel()
+      let item = DispatchWorkItem { [weak self] in
+        self?.target?.show()
       }
+      pendingActivationWorkItem = item
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: item)
     } else {
+      pendingActivationWorkItem?.cancel()
+      pendingActivationWorkItem = nil
       DispatchQueue.main.async {
         self.target?.hide(afterClose: nil)
       }

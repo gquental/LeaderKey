@@ -129,6 +129,29 @@ final class ModifierTriggerTests: XCTestCase {
     
     // If hide is idempotent (which it is in Controller), this is safe.
   }
+
+  func testTriggerDebounce() {
+    let cmd = NSEvent.ModifierFlags.command
+    Defaults[.modifierActivationMask] = cmd.rawValue
+    
+    // 1. Activate (should be delayed)
+    // We expect "Show" NOT to be called if we cancel quickly
+    let showExpectation = XCTestExpectation(description: "Show should not be called")
+    showExpectation.isInverted = true
+    target.showExpectation = showExpectation
+    
+    if let event = NSEvent.keyEvent(with: .flagsChanged, location: .zero, modifierFlags: cmd, timestamp: 0, windowNumber: 0, context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 55) {
+        trigger.handleFlagsChanged(event)
+    }
+    
+    // 2. Immediately Deactivate (before 0.05s debounce triggers)
+    if let event = NSEvent.keyEvent(with: .flagsChanged, location: .zero, modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil, characters: "", charactersIgnoringModifiers: "", isARepeat: false, keyCode: 55) {
+        trigger.handleFlagsChanged(event)
+    }
+    
+    wait(for: [showExpectation], timeout: 0.1)
+    XCTAssertFalse(target.showCalled)
+  }
 }
 
 final class ControllerBehaviorTests: XCTestCase {
