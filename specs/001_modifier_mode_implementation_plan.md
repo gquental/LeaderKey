@@ -18,5 +18,15 @@
 - [x] Implement debounce logic (e.g. 50ms) for activation to prevent flickering when rolling keys.
 
 ## Phase 4: Safety & Cleanup
+
 - [x] Ensure `windowDidResignKey` acts as a fail-safe to hide the window.
+
 - [x] Verify no "focus wars" occur if the user holds the keys while switching spaces.
+
+
+
+## Phase 5: Verification
+
+- [x] Create integration tests (`Spec1IntegrationTests`) to verify end-to-end user stories.
+
+- [x] Run full test suite to ensure no regression.

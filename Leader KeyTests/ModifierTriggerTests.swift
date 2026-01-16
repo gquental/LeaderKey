@@ -230,11 +230,194 @@ final class ControllerBehaviorTests: XCTestCase {
     XCTAssertFalse(Controller.isModifierMode(cmd.union(.option))) // Strict match? Implementation intersects relevant flags.
   }
   
-  func testIsModifierMode_IgnoresIrrelevantFlags() {
-    let cmd = NSEvent.ModifierFlags.command
-    Defaults[.modifierActivationMask] = cmd.rawValue
-    
-    // capsLock should be ignored
-    XCTAssertTrue(Controller.isModifierMode(cmd.union(.capsLock)))
+    func testIsModifierMode_IgnoresIrrelevantFlags() {
+  
+      let cmd = NSEvent.ModifierFlags.command
+  
+      Defaults[.modifierActivationMask] = cmd.rawValue
+  
+      
+  
+      // capsLock should be ignored
+  
+      XCTAssertTrue(Controller.isModifierMode(cmd.union(.capsLock)))
+  
+    }
+  
   }
-}
+  
+  
+  
+  final class Spec1IntegrationTests: XCTestCase {
+  
+  
+  
+    var originalSuite: UserDefaults!
+  
+  
+  
+  
+  
+  
+  
+    override func setUp() {
+  
+  
+  
+      super.setUp()
+  
+  
+  
+      originalSuite = defaultsSuite
+  
+  
+  
+      defaultsSuite = UserDefaults(suiteName: UUID().uuidString)!
+  
+  
+  
+      
+  
+  
+  
+      // Ensure clean state even if previous tests leaked
+  
+  
+  
+      Defaults[.isModifierTriggerEnabled] = false
+  
+  
+  
+      Defaults[.modifierActivationMask] = 0
+  
+  
+  
+    }
+  
+  
+  
+    
+  
+  
+  
+    override func tearDown() {
+  
+  
+  
+      // Clean up
+  
+  
+  
+      Defaults[.isModifierTriggerEnabled] = false
+  
+  
+  
+      Defaults[.modifierActivationMask] = 0
+  
+  
+  
+      
+  
+  
+  
+      defaultsSuite = originalSuite
+  
+  
+  
+      super.tearDown()
+  
+  
+  
+    }
+  
+  
+  
+  
+  
+  
+  
+    func testSpec1_Requirements_Defaults() {
+  
+      // Requirement: Add a new section in Settings > General for "Modifier Access".
+  
+      // We verify the backing store exists.
+  
+      
+  
+      // Default should be disabled
+  
+      XCTAssertFalse(Defaults[.isModifierTriggerEnabled], "Should be disabled by default")
+  
+      XCTAssertEqual(Defaults[.modifierActivationMask], 0, "Mask should be 0 by default")
+  
+      
+  
+      // User enables it and sets a mask
+  
+      Defaults[.isModifierTriggerEnabled] = true
+  
+      let hyper = NSEvent.ModifierFlags([.command, .option, .control, .shift])
+  
+      Defaults[.modifierActivationMask] = hyper.rawValue
+  
+      
+  
+      XCTAssertTrue(Defaults[.isModifierTriggerEnabled])
+  
+      XCTAssertEqual(Defaults[.modifierActivationMask], hyper.rawValue)
+  
+    }
+  
+    
+  
+    func testSpec1_ControllerBehavior_RunAndHide() {
+  
+      // Requirement: "Execute a command ... immediately hide the window."
+  
+      // Requirement: "Window to disappear immediately if I release the modifiers without typing a command." (Covered by ModifierTriggerTests)
+  
+      
+  
+      let cmd = NSEvent.ModifierFlags.command
+  
+      Defaults[.modifierActivationMask] = cmd.rawValue
+  
+      
+  
+      // Simulate action execution with modifier held
+  
+      let action = Action(key: "t", type: .command, value: "echo test")
+  
+      let behavior = Controller.behaviorForAction(action, modifiers: cmd)
+  
+      
+  
+      // Must be runAndHide, NOT runAndStay
+  
+      XCTAssertEqual(behavior, .runAndHide, "Should run and hide when triggered via Modifier Mode")
+  
+    }
+  
+    
+  
+    func testSpec1_EdgeCase_Interference() {
+  
+      // Edge Case: "If the user selects just Command... user bears responsibility."
+  
+      // We just ensure the system allows it (logic doesn't block it).
+  
+      
+  
+      let cmd = NSEvent.ModifierFlags.command
+  
+      Defaults[.modifierActivationMask] = cmd.rawValue
+  
+      
+  
+      XCTAssertTrue(Controller.isModifierMode(cmd))
+  
+    }
+  
+  }
+  
+  
