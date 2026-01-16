@@ -27,6 +27,6 @@
 
 ## Phase 5: Verification
 
-- [x] Create integration tests (`Spec1IntegrationTests`) to verify end-to-end user stories.
+- [x] Create integration tests (`ModifierModeIntegrationTests`) to verify end-to-end user stories.
 
 - [x] Run full test suite to ensure no regression.

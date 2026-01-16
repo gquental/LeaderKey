@@ -248,7 +248,7 @@ final class ControllerBehaviorTests: XCTestCase {
   
   
   
-  final class Spec1IntegrationTests: XCTestCase {
+  final class ModifierModeIntegrationTests: XCTestCase {
   
   
   
