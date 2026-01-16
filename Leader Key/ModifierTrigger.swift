@@ -22,6 +22,12 @@ class ModifierTrigger {
       }
       .store(in: &cancellables)
 
+    Defaults.publisher(.isModifierTriggerEnabled)
+      .sink { [weak self] _ in
+        self?.setupMonitors()
+      }
+      .store(in: &cancellables)
+
     setupMonitors()
   }
 
@@ -36,7 +42,8 @@ class ModifierTrigger {
     }
 
     let maskValue = Defaults[.modifierActivationMask]
-    guard maskValue > 0 else { return }
+    let isEnabled = Defaults[.isModifierTriggerEnabled]
+    guard isEnabled && maskValue > 0 else { return }
 
     globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
       self?.handleFlagsChanged(event)
@@ -50,7 +57,8 @@ class ModifierTrigger {
 
   func handleFlagsChanged(_ event: NSEvent) {
     let maskValue = Defaults[.modifierActivationMask]
-    guard maskValue > 0 else { return }
+    let isEnabled = Defaults[.isModifierTriggerEnabled]
+    guard isEnabled && maskValue > 0 else { return }
 
     let relevantFlags: NSEvent.ModifierFlags = [.command, .option, .control, .shift]
     let currentFlags = event.modifierFlags.intersection(relevantFlags)

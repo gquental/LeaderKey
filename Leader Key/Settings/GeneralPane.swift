@@ -10,6 +10,7 @@ struct GeneralPane: View {
   @Default(.configDir) var configDir
   @Default(.theme) var theme
   @Default(.modifierActivationMask) var modifierActivationMask
+  @Default(.isModifierTriggerEnabled) var isModifierTriggerEnabled
 
   var body: some View {
     Settings.Container(contentWidth: contentWidth) {
@@ -92,10 +93,16 @@ struct GeneralPane: View {
 
       Settings.Section(title: "Hold to Open") {
         VStack(alignment: .leading) {
-          ModifierPicker(mask: $modifierActivationMask)
-          Text("Hold these keys to momentarily show the window.")
-            .font(.caption)
-            .foregroundColor(.secondary)
+          Toggle("Enabled", isOn: $isModifierTriggerEnabled)
+            .toggleStyle(.switch)
+            .labelsHidden()
+
+          if isModifierTriggerEnabled {
+            ModifierPicker(mask: $modifierActivationMask)
+            Text("Hold these keys to momentarily show the window.")
+              .font(.caption)
+              .foregroundColor(.secondary)
+          }
         }
       }
 

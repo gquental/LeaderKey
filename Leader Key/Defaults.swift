@@ -42,6 +42,8 @@ extension Defaults.Keys {
 
   static let modifierActivationMask = Key<UInt>(
     "modifierActivationMask", default: 0, suite: defaultsSuite)
+  static let isModifierTriggerEnabled = Key<Bool>(
+    "isModifierTriggerEnabled", default: false, suite: defaultsSuite)
 }
 
 enum AutoOpenCheatsheetSetting: String, Defaults.Serializable {

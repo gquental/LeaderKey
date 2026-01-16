@@ -32,9 +32,11 @@ final class ModifierTriggerTests: XCTestCase {
     
     target = MockModifierTriggerTarget()
     trigger = ModifierTrigger(target: target)
+    Defaults[.isModifierTriggerEnabled] = true
   }
   
   override func tearDown() {
+    Defaults[.isModifierTriggerEnabled] = false
     Defaults[.modifierActivationMask] = 0
     defaultsSuite = originalSuite
     trigger = nil
