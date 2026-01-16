@@ -22,12 +22,14 @@ class Controller {
   var window: MainWindow!
   var cheatsheetWindow: NSWindow!
   private var cheatsheetTimer: Timer?
+  private var modifierTrigger: ModifierTrigger!
 
   private var cancellables = Set<AnyCancellable>()
 
   init(userState: UserState, userConfig: UserConfig) {
     self.userState = userState
     self.userConfig = userConfig
+    self.modifierTrigger = ModifierTrigger(target: self)
 
     Task {
       for await value in Defaults.updates(.theme) {
@@ -384,3 +386,5 @@ extension Screen {
     }
   }
 }
+
+extension Controller: ModifierTriggerTarget {}

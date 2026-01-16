@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		427C18562BD31F9599990002 /* ModifierTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427C18552BD31F9599990001 /* ModifierTrigger.swift */; };
+		427C18582BD31F9599990004 /* ModifierTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427C18572BD31F9599990003 /* ModifierTriggerTests.swift */; };
 		115AA5BF2DA521C600C17E18 /* ActionIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115AA5BE2DA521C200C17E18 /* ActionIcon.swift */; };
 		115AA5C22DA546D500C17E18 /* SymbolPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 115AA5C12DA546D500C17E18 /* SymbolPicker */; };
 		130196C62D73B3DE0093148B /* Breadcrumbs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130196C52D73B3DC0093148B /* Breadcrumbs.swift */; };
@@ -68,6 +70,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		427C18552BD31F9599990001 /* ModifierTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierTrigger.swift; sourceTree = "<group>"; };
+		427C18572BD31F9599990003 /* ModifierTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifierTriggerTests.swift; sourceTree = "<group>"; };
 		115AA5BE2DA521C200C17E18 /* ActionIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionIcon.swift; sourceTree = "<group>"; };
 		130196C52D73B3DC0093148B /* Breadcrumbs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breadcrumbs.swift; sourceTree = "<group>"; };
 		423632142D678F4400878D92 /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
@@ -192,6 +196,7 @@
 				42454DDA2D71CB39004E1374 /* ConfigValidator.swift */,
 				427C181B2BD314B500955B98 /* Constants.swift */,
 				427C18272BD31E2E00955B98 /* Controller.swift */,
+				427C18552BD31F9599990001 /* ModifierTrigger.swift */,
 				427C184C2BD65C5C00955B98 /* Defaults.swift */,
 				42DFCD712D5B7D46002EA111 /* Events.swift */,
 				42F4CDD02D48C51F00D0DD76 /* Extensions.swift */,
@@ -224,6 +229,7 @@
 		427C17FB2BD311B500955B98 /* Leader KeyTests */ = {
 			isa = PBXGroup;
 			children = (
+				427C18572BD31F9599990003 /* ModifierTriggerTests.swift */,
 				4284834B2E813212009D7EEF /* KeyboardLayoutTests.swift */,
 				42454DDC2D71CBAB004E1374 /* ConfigValidatorTests.swift */,
 				EC5CEBC4C47B4C5DB2258814 /* URLSchemeTests.swift */,
@@ -409,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				427C18562BD31F9599990002 /* ModifierTrigger.swift in Sources */,
 				427C182B2BD31E2E00955B98 /* Controller.swift in Sources */,
 				423632222D68CA6500878D92 /* MysteryBox.swift in Sources */,
 				605385A32D523CAD00BEDB4B /* Pulsate.swift in Sources */,
@@ -450,6 +457,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				427C18582BD31F9599990004 /* ModifierTriggerTests.swift in Sources */,
 				42454DDD2D71CBAB004E1374 /* ConfigValidatorTests.swift in Sources */,
 				EC5CEBC4C47B4C5DB2258813 /* URLSchemeTests.swift in Sources */,
 				427C17FD2BD311B500955B98 /* UserConfigTests.swift in Sources */,

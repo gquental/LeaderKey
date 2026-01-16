@@ -6,11 +6,11 @@
 - [x] Add toggle to enable/disable this feature in Settings.
 
 ## Phase 2: Core Logic (Event Monitoring)
-- [ ] In `AppDelegate.swift` (or a new `ModifierTrigger.swift` controller), setup `NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged)`.
-- [ ] Implement logic to compare current flags with configured mask.
-    - [ ] `strictMatch`: triggers only if flags == target (ignoring caps lock/fn usually).
-- [ ] Connect trigger to `controller.show()`.
-- [ ] Connect release (flags mismatch) to `controller.hide()`.
+- [x] In `AppDelegate.swift` (or a new `ModifierTrigger.swift` controller), setup `NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged)`.
+- [x] Implement logic to compare current flags with configured mask.
+    - [x] `strictMatch`: triggers only if flags == target (ignoring caps lock/fn usually).
+- [x] Connect trigger to `controller.show()`.
+- [x] Connect release (flags mismatch) to `controller.hide()`.
 
 ## Phase 3: Execution Refinement
 - [ ] Modify `Controller.handleKey` to ensure `hide()` is called immediately on execution, overriding any "stay open" logic if triggered via Modifier Mode.
