@@ -45,11 +45,13 @@ class ModifierTrigger {
     let isEnabled = Defaults[.isModifierTriggerEnabled]
     guard isEnabled && maskValue > 0 else { return }
 
-    globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+    globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) {
+      [weak self] event in
       self?.handleFlagsChanged(event)
     }
 
-    localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+    localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) {
+      [weak self] event in
       self?.handleFlagsChanged(event)
       return event
     }
